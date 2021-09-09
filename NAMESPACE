@@ -1,0 +1,9 @@
+importFrom("data.table","fread")
+importFrom("stats", "pchisq", "rnorm")
+importFrom("utils", "write.table")
+
+export(ebayes_EM)
+export(multinormal)
+export(likelihood)
+export(PCG)
+export(ScoreEB)
