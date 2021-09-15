@@ -98,7 +98,7 @@ likelihood<-function(xxn,xxx,yn,bbo)#xxn:fix matrix;xxx:gene matrix;yn:pheno mat
     bb<-solve(crossprod(ad,ad))%*%crossprod(ad,yn)
   vv1<-as.numeric(crossprod((yn-ad%*%bb),(yn-ad%*%bb))/ns);
   ll1<-sum(log(abs(multinormal(yn,ad%*%bb,vv1))))
-
+  
   sub<-1:ncol(ad);
   if(at1>0.5)
   {
@@ -111,7 +111,7 @@ likelihood<-function(xxn,xxx,yn,bbo)#xxn:fix matrix;xxx:gene matrix;yn:pheno mat
       if(abs(min(eigen(crossprod(ad1,ad1))$values))<1e-6)
         bb1<-solve(crossprod(ad1,ad1)+diag(ncol(ad1))*0.01)%*%crossprod(ad1,yn)
       else
-        bb1<-solve(crossprod(ad1,ad1))%*%crossprod(ad1,yn)
+        bb1<-solve(crossprod(ad1,ad1))%*%crossprod(ad1,yn) 
       vv0<-as.numeric(crossprod((yn-ad1%*%bb1),(yn-ad1%*%bb1))/ns);
       ll0<-sum(log(abs(multinormal(yn,ad1%*%bb1,vv0))))
       lod[ww1[i]]<--2.0*(ll0-ll1)/(2.0*log(10))
@@ -133,7 +133,7 @@ PCG <- function(G,b,m.marker,sigma.k2,sigma.e2,tol,miter){
   M <- 1/(tau[1]*(1/m.marker)*rowSums(G^2) + tau[2])
   p <- M*r
   ### initial value of min.tol, here min.tol = norm(r,"2")
-  min.tol <- sqrt(sum(p^2))
+  min.tol <- sqrt(sum(p^2))  
   while((min.tol > tol) && (k < miter)){
     Ap <- tau[1]*(1/m.marker)*tcrossprod(G,crossprod(p,G)) + tau[2]*p
     alpha <- diag(crossprod(r,p))/diag(crossprod(p,Ap))
@@ -145,7 +145,7 @@ PCG <- function(G,b,m.marker,sigma.k2,sigma.e2,tol,miter){
       r <- r1
       p <- p1
       break
-    }
+    } 
     p1 <- M*r1
     beta <- diag(crossprod(p1,r1))/diag(crossprod(p,r))
     p1 <- p1 + p*beta
@@ -153,17 +153,17 @@ PCG <- function(G,b,m.marker,sigma.k2,sigma.e2,tol,miter){
     r <- r1
     p <- p1
     k <- k + 1
-  }
+  } 
   # print(k)
   # print(min.tol)
   ### return the solution x=A^(-1)*b
-  return (x)
+  return (x) 
 }
 
 ScoreEB <- function(genofile, phenofile, popfile = NULL, trait.num = 1, EMB.tau = 0, EMB.omega = 0, B.Moment = 20, tol.pcg = 1e-4, iter.pcg = 100, bin = 100, lod.cutoff = 3.0, seed.num = 10000, dir_out)
 {
   t.start <- proc.time()
-
+  
   geno <- fread(genofile, header = TRUE)
   pheno <- fread(phenofile, header = TRUE)
   pheno <- as.matrix(pheno[,-1])
@@ -179,17 +179,17 @@ ScoreEB <- function(genofile, phenofile, popfile = NULL, trait.num = 1, EMB.tau 
     popstr <- popstr[,-1]
     F.fix <- cbind(F.fix, popstr)
   }
-
+  
   result.total <- NULL
   for(jj in 1:trait.num){
-
+    
     result <- NULL
     result.final <- NULL
-
+    
     ##Center the phenotype, center and scale the genotype
     Y <- as.matrix(pheno[,jj])
-    Y.center <- scale(Y, center = TRUE, scale = FALSE)
-
+    Y.center <- scale(Y, center = TRUE, scale = FALSE) 
+    
     ##Moment estimation for variance component
     set.seed(seed.num)
     B <- B.Moment
@@ -201,35 +201,35 @@ ScoreEB <- function(genofile, phenofile, popfile = NULL, trait.num = 1, EMB.tau 
     XX.Zb <- X.scale%*%(t(X.scale)%*%Zb)
     XX.Fix.Zb <- X.scale%*%(t(X.scale)%*%(F.fix%*%(solve(crossprod(F.fix, F.fix))%*%crossprod(F.fix, Zb))))
     Minus.Tmp <- XX.Zb - XX.Fix.Zb
-
+    
     Zb.Minus <- matrix(0,B,1)
     Minus.Minus <- matrix(0,B,1)
     for(i in 1:B){
       Zb.Minus[i] <- crossprod(as.matrix(Zb[,i]),as.matrix(Minus.Tmp[,i]))
       Minus.Minus[i] <- crossprod(as.matrix(Minus.Tmp[,i]),as.matrix(Minus.Tmp[,i]))
     }
-
+    
     Trace.KV <- (1/B)*(1/m.marker)*sum(Zb.Minus)
     Trace.KVKV <- (1/B)*(1/m.marker)^2*sum(Minus.Minus)
     N.C <- n.sample - dim(F.fix)[2]
     Coef.Var <- matrix(c(Trace.KVKV, Trace.KV, Trace.KV, N.C), 2, 2, byrow = TRUE)
-
+    
     YY <- crossprod(Y.center, Y.center)
     Y.Fix.Y <- t(Y.center)%*%(F.fix%*%(solve(crossprod(F.fix,F.fix))%*%crossprod(F.fix, Y.center)))
     YVY <- as.numeric(YY) - as.numeric(Y.Fix.Y)
-
+    
     XY <- crossprod(X.scale, Y.center)
     X.Fix.Y <- t(X.scale)%*%(F.fix%*%(solve(crossprod(F.fix,F.fix))%*%crossprod(F.fix, Y.center)))
     Minus.Y <- XY - X.Fix.Y
     Y.VKV.Y <- (1/m.marker)*as.numeric(crossprod(Minus.Y, Minus.Y))
-
+    
     Predict.Vec <- as.matrix(c(Y.VKV.Y, YVY))
     var.com <- solve(Coef.Var)%*%Predict.Vec
-
+    
     ##Variance Components
     sigma.k2 <- abs(var.com[1])
     sigma.e2 <- abs(var.com[2])
-
+    
     ##T-score statistics
     if(n.sample <= 1000){
       M0 <- sigma.k2*tcrossprod(X, X)/m.marker + sigma.e2*diag(n.sample)
@@ -237,26 +237,50 @@ ScoreEB <- function(genofile, phenofile, popfile = NULL, trait.num = 1, EMB.tau 
       M0F <- solve(M0)%*%F.fix
     }else{
       M0Y <- PCG(X,Y,m.marker,sigma.k2,sigma.e2,tol.pcg,iter.pcg)
-      M0F <- PCG(X,F.fix,m.marker,sigma.k2,sigma.e2,tol.pcg,iter.pcg)
+      M0F <- PCG(X,F.fix,m.marker,sigma.k2,sigma.e2,tol.pcg,iter.pcg) 
     }
-
+    
     FtM0F <- solve(crossprod(F.fix, M0F))
     FtM0Y <- crossprod(F.fix, M0Y)
     right.part <- M0F%*%FtM0F%*%FtM0Y
     PY <- M0Y - right.part
-
+    
     tmp <- crossprod(X, PY)
     t.score <- 0.5*tmp^2
-    p.value <- pchisq(t.score, 1, lower.tail = FALSE)
-    result <- cbind(as.matrix(jj, m.marker), as.matrix(1:m.marker), geno[,2:3], as.matrix(t.score), as.matrix(p.value))
-
+    
+    ## obtain p value : update code ###
+    # a.coef <- NULL
+    # set.seed(seed.num)
+    # rand.loci <- sample(c(1:m.marker), 30, replace = FALSE)
+    # for(ss in 1:30){
+    #   if(n.sample <= 1000){
+    #     M0 <- sigma.k2*tcrossprod(X, X)/m.marker + sigma.e2*diag(n.sample)
+    #     M0X <- solve(M0)%*%as.matrix(X[,rand.loci[ss]])
+    #   }else{
+    #     M0X <- PCG(X,X[,rand.loci[ss]],m.marker,sigma.k2,sigma.e2,tol.pcg,iter.pcg)
+    #   }
+    #   FtM0X <- crossprod(F.fix, M0X)
+    #   right.part.X <- M0F%*%FtM0F%*%FtM0X
+    #   PX <- M0X - right.part.X
+    #   XtPX <- crossprod(X[,rand.loci[ss]], PX)
+    #   XtX <- crossprod(X[,rand.loci[ss]],X[,rand.loci[ss]])
+    #   a.coef <- c(a.coef, (as.numeric(XtPX)/as.numeric(XtX)))
+    # }
+    # mean.a.coef <- mean(a.coef)
+    # all.XtX <- colSums(X^2)
+    # all.XtPX <- mean.a.coef*all.XtX
+    # chi.square <- t.score/all.XtPX
+    # p.value <- pchisq(chi.square, 1, lower.tail = FALSE)
+    
+    result <- cbind(as.matrix(jj, m.marker), as.matrix(1:m.marker), geno[,2:3], as.matrix(t.score))
+    
     ##divide SNPs into bin
     if((m.marker%%bin)==0){
       group <- m.marker/bin
     }else{
       group <- floor(m.marker/bin) + 1
     }
-
+    
     find.bin.max <- NULL
     for(i in 1:(group-1)){
       tmp <- (1+(i-1)*bin):(i*bin)
@@ -266,42 +290,41 @@ ScoreEB <- function(genofile, phenofile, popfile = NULL, trait.num = 1, EMB.tau 
     tmp.last <- (1+(group-1)*bin):m.marker
     max.score.last <- result[(group-1)*bin + max(which(result[tmp.last, 5] == max(result[tmp.last, 5]))),]
     find.bin.max <- rbind(find.bin.max, matrix(max.score.last,1,))
-
+    
     find.bin.max <- find.bin.max[order(as.numeric(find.bin.max[,5]), decreasing = TRUE),]
     nrow.find.bin.max <- dim(find.bin.max)[1]
     nrow.select <- min(n.sample, nrow.find.bin.max)
     find.bin.max <- find.bin.max[1:nrow.select,]
-
+    
     ##Empirical Bayes and likelihood ratio test
     geno.bayes <- X[,as.numeric(find.bin.max[,2])]
     b.bayes <- ebayes_EM(F.fix,geno.bayes,Y,EMB.tau,EMB.omega)
     lod <- likelihood(F.fix,geno.bayes,Y,b.bayes)
-
+    
     result.final <- cbind(find.bin.max, as.matrix(b.bayes), as.matrix(lod))
-    select.final <- which(result.final[,8]>=lod.cutoff)
+    select.final <- which(result.final[,7]>=lod.cutoff)
     if(length(select.final)==0){
       print(paste0("There is no SNP identified in Trait", jj, "!"))
       next
     }else if(length(select.final)==1){
-      result.final <- matrix(unlist(result.final[select.final,]),1,8)
+      result.final <- matrix(unlist(result.final[select.final,]),1,7)
     }else{
       result.final <- result.final[select.final,]
     }
-    result.final[,6] <- as.matrix(pchisq(as.numeric(result.final[,8])*4.605,1,lower.tail = FALSE))
-    result.final <- cbind(result.final, result.final[,6])
-
-    result.total <- rbind(result.total,result.final[,-6])
+    p.value <- as.matrix(pchisq(as.numeric(result.final[,7])*4.605,1,lower.tail = FALSE)) 
+    result.final <- cbind(result.final, p.value)
+    result.total <- rbind(result.total,result.final)
   }
   colnames(result.total) <- c("Trait", "Id", "Chr", "Pos", "Score", "Beta", "Lod", "Pvalue")
-
+  
   t.end <- proc.time()
   t.use <- t.end - t.start
-
+  
   time.use <- as.matrix(c(t.use[[1]], t.use[[2]], t.use[[3]]))
   rownames(time.use) <- c("User", "System", "Elapse")
-
+  
   write.table(time.use, paste0(dir_out, "/", "ScoreEB.time.csv"), sep = ",", quote = FALSE, row.names = TRUE, col.names = FALSE)
   write.table(result.total, paste0(dir_out, "/", "ScoreEB.Result.csv"), sep = ",", quote = FALSE, row.names = FALSE, col.names = TRUE)
-
+  
   return (result.total)
 }

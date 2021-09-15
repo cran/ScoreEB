@@ -13,12 +13,12 @@ EMB.omega = 0, B.Moment = 20, tol.pcg = 1e-4, iter.pcg = 100, bin = 100,
 lod.cutoff = 3.0, seed.num = 10000, dir_out)
 }
 \arguments{
-  \item{genofile}{Genotype file name, change the file path where it is
-    located,i.e.,"D:/ScoreEB_CRAN/Example/Genotype_Example.csv".}
-  \item{phenofile}{Phenotype file name, change the file path where it
-    is located,i.e.,"D:/ScoreEB_CRAN/Example/Phenotype_Example.csv".}
+  \item{genofile}{Genotype file name, change the file path where it is located,
+  i.e.,"D:/Genotype_Example.csv".}
+  \item{phenofile}{Phenotype file name, change the file path where it is located,
+  i.e.,"D:/Phenotype_Example.csv".}
   \item{popfile}{Population structure file name, change the file path
-    where it is located,i.e.,"D:/ScoreEB_CRAN/Example/Population.csv".}
+    where it is located,i.e.,"D:/Population.csv".}
   \item{trait.num}{trait.num stands for computing trait from the 1st to the "trait.num"}
   \item{EMB.tau}{EMB.tau and EMB.omega are two values of hyperparameters in
   empirical Bayes step, which are set to 0 by default.}
@@ -45,14 +45,14 @@ lod.cutoff = 3.0, seed.num = 10000, dir_out)
 }
 \note{
 1. genofile and phenofile are the required input file, while popfile is the optional input file.\cr
-2. In the "../ScoreEB/inst/extdata" folder, there are two results files "ScoreEB.Result.csv" and "ScoreEB.time.csv" generated and saved after the run.\cr
+2. In the "tempdir()" folder, there are two results files "ScoreEB.Result.csv" and "ScoreEB.time.csv" generated and saved after the run.\cr
 3. The results file "ScoreEB.Result.csv" has 8 columns, including "Trait", "Id", "Chr", "Pos", "Score", "Beta", "Lod" and "Pvalue".\cr
 4. The time file "ScoreEB.time.csv" includes 3 rows, which are "User", "System", "Elapse" time, respectively.\cr
 }
 \examples{
 genofile <- system.file("extdata", "Genotype_Example.csv", package="ScoreEB")
 phenofile <-system.file("extdata", "Phenotype_Example.csv", package="ScoreEB")
-dir_out <- system.file("extdata", package="ScoreEB")
+dir_out <- tempdir()
 ScoreEB(genofile, phenofile, popfile = NULL, trait.num = 1, EMB.tau = 0,
 EMB.omega = 0, B.Moment = 20, tol.pcg = 1e-4, iter.pcg = 100, bin = 100,
 lod.cutoff = 3.0, seed.num = 10000, dir_out)

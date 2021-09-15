@@ -1,12 +1,12 @@
-20f63272bd188f6ec3674924d0fac986 *DESCRIPTION
+cdb7cf47e30f0ef332b57ca9c9281704 *DESCRIPTION
 8f06ad5ade623f911fcacab4d07ef9cd *NAMESPACE
-0418a0e462e528af3b21749ee1799b7a *R/ScoreEB.R
+329f7f8cd6f1e88928aa5aa6f5f65dfc *R/ScoreEB.R
 66cdc4953e94ee1ff95df1b88d9536de *data/geno.rda
 6d219d53d275ab87d1d7f30c463a9bc2 *data/pheno.rda
 813187113347742f30b85a8d57b470b4 *inst/extdata/Genotype_Example.csv
 b7bf0618512cb2ff79324e4adda72e1d *inst/extdata/Phenotype_Example.csv
 69e03acb44944dee3b283e55dece439b *man/PCG.Rd
-9fd0552b9300385bbff1a7d89e905a75 *man/ScoreEB.Rd
+74f90a2f2da48ecd4e00360c25bdb3a9 *man/ScoreEB.Rd
 22df0cd9e3f721f03fa720d5ba01ac23 *man/ebayes_EM.Rd
 098478e609cfb5d8c33178f0a632cd17 *man/geno.Rd
 18fa998836e54d6e9619aa9edbc1da23 *man/likelihood.Rd
